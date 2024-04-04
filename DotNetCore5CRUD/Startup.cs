@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NToastNotify;
 
 namespace DotNetCore5CRUD
 {
@@ -28,7 +29,15 @@ namespace DotNetCore5CRUD
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            
+
+            services.AddMvc().AddNToastNotifyToastr(new NToastNotify.ToastrOptions()
+            {
+                ProgressBar = true,
+                PositionClass = ToastPositions.TopRight,
+                PreventDuplicates = true,
+                CloseButton = true
+            });
+
             services.AddControllersWithViews();
         }
 

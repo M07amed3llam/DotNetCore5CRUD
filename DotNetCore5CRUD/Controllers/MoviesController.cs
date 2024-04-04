@@ -2,6 +2,7 @@
 using DotNetCore5CRUD.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,12 +13,14 @@ namespace DotNetCore5CRUD.Controllers
     public class MoviesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private new List<string> _allowedExtesion = new List<string> { ".jpg", ".png" };
+        private readonly List<string> _allowedExtesion = new List<string> { ".jpg", ".png" };
         private long _MaxAllowedPosterSize = 1048576;
+        private readonly IToastNotification _toastNotification;
 
-        public MoviesController(ApplicationDbContext context)
+        public MoviesController(ApplicationDbContext context, IToastNotification toastNotification)
         {
             _context = context;
+            _toastNotification = toastNotification;
         }
         public async Task<IActionResult> Index()
         {
@@ -102,6 +105,9 @@ namespace DotNetCore5CRUD.Controllers
 
             _context.Movies.Add(movie);
             _context.SaveChanges();
+
+            // Add Toaster Notification
+            _toastNotification.AddSuccessToastMessage("Movie added successfully");
 
             return RedirectToAction(nameof(Index));
         }
@@ -195,6 +201,9 @@ namespace DotNetCore5CRUD.Controllers
             movie.StoreLine = model.StoreLine;
 
             _context.SaveChanges();
+
+            _toastNotification.AddSuccessToastMessage("Movie Updated successfully");
+
             return RedirectToAction(nameof(Index));
         }
     }
