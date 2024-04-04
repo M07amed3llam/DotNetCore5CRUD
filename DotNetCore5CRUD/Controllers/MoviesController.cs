@@ -225,5 +225,21 @@ namespace DotNetCore5CRUD.Controllers
 
             return View(movie);
         }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var movie = await _context.Movies.FindAsync(id);
+
+            if (movie == null)
+                return NotFound();
+
+            _context.Movies.Remove(movie);
+            _context.SaveChanges();
+            
+            return Ok();
+        }
     }
 }
