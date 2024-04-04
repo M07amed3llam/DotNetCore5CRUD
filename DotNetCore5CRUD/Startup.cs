@@ -30,7 +30,7 @@ namespace DotNetCore5CRUD
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMvc().AddNToastNotifyToastr(new NToastNotify.ToastrOptions()
+            services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
             {
                 ProgressBar = true,
                 PositionClass = ToastPositions.TopRight,

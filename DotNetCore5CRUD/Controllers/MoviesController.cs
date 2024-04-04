@@ -24,7 +24,10 @@ namespace DotNetCore5CRUD.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var movies = await _context.Movies.ToListAsync();
+            var movies = await _context
+                                    .Movies
+                                    .OrderByDescending(x => x.Rate)
+                                    .ToListAsync();
             return View(movies);
         }
 
@@ -79,7 +82,7 @@ namespace DotNetCore5CRUD.Controllers
             }
 
             // validate image size
-            if(poster.Length > _MaxAllowedPosterSize)
+            if (poster.Length > _MaxAllowedPosterSize)
             {
                 model.Genres = await _context
                                 .Genres
@@ -118,8 +121,8 @@ namespace DotNetCore5CRUD.Controllers
                 return BadRequest();
 
             var movie = await _context.Movies.FindAsync(id);
-            
-            if(movie == null)
+
+            if (movie == null)
                 return NotFound();
 
             var viewModel = new MovieFormViewModel()
@@ -128,9 +131,9 @@ namespace DotNetCore5CRUD.Controllers
                 Title = movie.Title,
                 GenreId = movie.GenreId,
                 Rate = movie.Rate,
-                Year= movie.Year,
-                StoreLine= movie.StoreLine,
-                Poster= movie.Poster,
+                Year = movie.Year,
+                StoreLine = movie.StoreLine,
+                Poster = movie.Poster,
                 Genres = await _context
                                 .Genres
                                 .OrderBy(m => m.Name)
@@ -162,9 +165,9 @@ namespace DotNetCore5CRUD.Controllers
             if (files.Any())
             {
                 var poster = files.FirstOrDefault();
-                
+
                 using var dataStream = new MemoryStream();
-                
+
                 await poster.CopyToAsync(dataStream);
 
                 model.Poster = dataStream.ToArray();
@@ -205,6 +208,22 @@ namespace DotNetCore5CRUD.Controllers
             _toastNotification.AddSuccessToastMessage("Movie Updated successfully");
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var movie = await _context
+                                    .Movies
+                                    .Include(m => m.Genre)
+                                    .SingleOrDefaultAsync(m => m.Id == id);
+
+            if (movie == null)
+                return NotFound();
+
+            return View(movie);
         }
     }
 }
