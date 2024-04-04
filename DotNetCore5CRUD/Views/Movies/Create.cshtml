@@ -44,7 +44,14 @@
                 <label class="custom-file-label" asp-for="Poster"></label>
                 <span asp-validation-for="Poster" class="text-danger"></span>
             </div>
-            
+            <button type="submit" class="btn btn-primary mt-4">
+                <i class="bi bi-check"></i>
+                Save
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary mt-4">
+                <i class="bi bi-x"></i>
+                Cancel
+            </a>
         </form>
     </div>
     <div class="col-md-4">
@@ -53,15 +60,6 @@
         </div>
     </div>
 </section>
-
-<button type="submit" class="btn btn-primary mt-4">
-    <i class="bi bi-check"></i>
-    Save
-</button>
-<a asp-action="Index" class="btn btn-outline-secondary mt-4">
-    <i class="bi bi-x"></i>
-    Cancel
-</a>
 
 @section Scripts {
     @{
